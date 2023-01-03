@@ -1,0 +1,45 @@
+@import "../../../assets/scss/variables";
+
+.tile {
+    height: 100px;
+    width: 100px;
+    background: $color-grey-light;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+
+    &.empty {
+        background: $color-grey;
+    }
+
+    &.tilled {
+        background: $color-brown;
+    }
+
+    &.has_plant {
+        background: $color-yellow;
+    }
+
+    &.harvest {
+        background: $color-green-dark;
+    }
+
+    img {
+        height: 75%;
+        width: auto;
+    }
+
+    p {
+        font-size: 12px;
+    }
+}
+
+.popover {
+    padding: 10px;
+
+    &_btn {
+        padding: 5px 40px;
+        font-family: $font-primary;
+        font-size: 21px;
+    }
+}

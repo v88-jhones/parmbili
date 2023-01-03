@@ -1,0 +1,26 @@
+@import "../../../assets/scss/variables";
+
+.plant {
+    background: $color-grey-light;
+    border-radius: 10px;
+    cursor: pointer;
+    gap: 10px;
+    height: 100px;
+    justify-content: center;
+    width: 100px;
+    text-align: center;
+    padding: 10px 0;
+    
+    &.active {
+        background: $color-yellow;
+    }
+
+    img {
+        height: 75%;
+        width: auto;
+    }
+
+    p {
+        font-size: 12px;
+    }
+}
