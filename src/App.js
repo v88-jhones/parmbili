@@ -2,9 +2,12 @@ import Parmbili from "./views/parmbili/parmbili";
 
 function App() {
     return (
-        <div className="container">
-            <Parmbili />
-        </div>
+        <>
+            <nav>Parmbili</nav>
+            <div className="container">
+                <Parmbili />
+            </div>
+        </>
     );
 }
 

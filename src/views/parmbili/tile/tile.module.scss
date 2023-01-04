@@ -6,6 +6,7 @@
     background: $color-grey-light;
     border-radius: 10px;
     cursor: pointer;
+    padding: 10px 0;
     text-align: center;
 
     &.empty {
@@ -22,6 +23,7 @@
 
     &.harvest {
         background: $color-green-dark;
+        color: $color-white;
     }
 
     img {
@@ -32,6 +34,12 @@
     p {
         font-size: 12px;
     }
+}
+
+.harvest_actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .popover {

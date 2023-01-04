@@ -18,18 +18,30 @@ html {
 body {
     background: $color-green;
     font-family: $font-primary;
-    font-weight: 300;
+    font-weight: 400;
 }
 
 .container {
     display: flex;
     justify-content: center;
-    margin: 100px auto;
+    margin: 20px auto;
     max-width: $bp-medium;
 }
 
 button {
-    // font-family: 'Public Sans', sans-serif !important;
+    font-size: 24px;
+
+    &:disabled {
+        cursor: not-allowed;
+        pointer-events: all !important;
+    }
+}
+
+nav {
+    background: $color-green-dark;
+    color: #fff;
+    font-size: 24px;
+    padding: 20px 30px;
 }
 
 .hide {

@@ -1,3 +1,10 @@
+
+export const DEFAULT = {
+    EARNINGS: 50,
+    LAND_SQUARE: 4,
+    MAX_LAND_SQUARE: 8
+}
+
 export const TILE = {
     EMPTY: 0,
     TILLED: 1,
@@ -9,7 +16,7 @@ export const PLANTS = [
     {
         id: 1,
         name: "potato",
-        time_to_harvest: 60,
+        time_to_harvest: 20,
         cost: 10,
         reward: 15,
         image: "potato.png"
@@ -39,3 +46,10 @@ export const PLANTS = [
         image: "corn.png"
     }
 ];
+
+export const EXPAND_LAND_COST = {
+    5: 180,
+    6: 270,
+    7: 360,
+    8: 450,
+};

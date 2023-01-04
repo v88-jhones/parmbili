@@ -5,6 +5,7 @@ const Plant = (props) => {
     const {
         plant, 
         active = false, 
+        disabled = false,
         onClick = () => {}
     } = props;
 
@@ -17,10 +18,20 @@ const Plant = (props) => {
         id
     } = plant;
 
+    const clickHandler = () => {
+        if(!disabled){
+            onClick(id)
+        }
+    }
+
     return (
         <div 
-            className={`${styles.plant} ${active ? styles.active : ''}`}
-            onClick={() => onClick(id)}
+            className={`
+                ${styles.plant} 
+                ${active ? styles.active : ''}
+                ${disabled ? styles.disabled : ''}
+            `}
+            onClick={clickHandler}
         >
             <img src={require(`../../../assets/images/plants/${image}`)} alt={name} />
             <p>{time_to_harvest}s / {cost}$ / {reward}$</p>

@@ -15,6 +15,11 @@
         background: $color-yellow;
     }
 
+    &.disabled {
+        cursor: not-allowed;
+        filter: brightness(.7);
+    }
+
     img {
         height: 75%;
         width: auto;

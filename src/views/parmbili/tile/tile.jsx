@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { till } from "../../../redux/tile/tile_slice";
-import { showSelectPlant } from "../../../redux/modal/modal_slice";
+import { till, toHarvest, harvest } from "../../../redux/tile/tile_slice";
+import { showSelectPlant, showRemovePlant } from "../../../redux/modal/modal_slice";
 
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
@@ -13,6 +13,35 @@ import styles from "./tile.module.scss";
 const Tile = ({tile}) => {
 
     const {id, status, plant} = tile;
+    const [remainingTime, setRemainingTime] = useState(null);
+
+    const dispatch = useDispatch();
+
+    const interval = useRef(null);
+
+    useEffect(() => {
+
+            if(plant){
+                interval.current = setInterval(() => {
+
+                    let current_date = new Date();
+                    let end_date = new Date(plant.end_time);
+                    let timeRemaining = Math.floor((end_date - current_date) / 1000);
+
+                    if(timeRemaining < 0){
+                        dispatch(toHarvest(id))
+                        setRemainingTime(0);
+                        clearInterval(interval.current)
+                    }
+                    else {
+                        setRemainingTime(timeRemaining);
+                    }
+            }, 1000);
+            
+        }else {
+            setRemainingTime(null);
+        }
+    }, [plant, dispatch, id]);
 
     const [showPopover, setShowPopover] = useState(false);
 
@@ -23,21 +52,32 @@ const Tile = ({tile}) => {
         [TILE.HARVEST]    : "harvest"
     };
 
-    const dispatch = useDispatch();
 
-    const toggleTillPopOver = () => {
+    const togglePopOver = () => {
         setShowPopover(prevState => !prevState);
     }
 
     const onTillClick = () => {
-        toggleTillPopOver();
+        togglePopOver();
         dispatch(till(id));
     }
 
     const onPlantClick = () => {
         dispatch(showSelectPlant(id));
-        toggleTillPopOver();
+        togglePopOver();
     }
+
+    const onHarvestClick = () => {
+        dispatch(harvest(id));
+        togglePopOver();
+    }
+
+    const onRemoveClick = () => {
+        dispatch(showRemovePlant(id));
+        togglePopOver()
+    }
+
+
 
     const Empty = () => {
         return (
@@ -68,7 +108,7 @@ const Tile = ({tile}) => {
             <Button 
                 variant="secondary" 
                 className={styles.popover_btn}
-                // onClick={onSecondaryBtnClick}
+                onClick={onRemoveClick}
             >
                 Remove
             </Button>
@@ -78,20 +118,22 @@ const Tile = ({tile}) => {
     const Harvest = () => {
         return (
             <>
-                <Button 
-                    variant="primary" 
-                    className={styles.popover_btn}
-                    // onClick={onPrimaryBtnClick}
-                >
-                    Harvest
-                </Button>
-                <Button 
-                    variant="secondary" 
-                    className={styles.popover_btn}
-                    // onClick={onSecondaryBtnClick}
-                >
-                    Remove
-                </Button>
+                <div className={styles.harvest_actions}>
+                    <Button 
+                        variant="primary" 
+                        className={styles.popover_btn}
+                        onClick={onHarvestClick}
+                    >
+                        Harvest
+                    </Button>
+                    <Button 
+                        variant="secondary" 
+                        className={styles.popover_btn}
+                        onClick={onRemoveClick}
+                    >
+                        Remove
+                    </Button>
+                </div>
             </>
         )
     }
@@ -116,7 +158,7 @@ const Tile = ({tile}) => {
             trigger="click" 
             placement="bottom" 
             overlay={popover}
-            onToggle={toggleTillPopOver}
+            onToggle={togglePopOver}
             show={showPopover}
         >
             <div className={`${styles.tile} ${styles[statusStyles[status]]}`}>
@@ -126,7 +168,11 @@ const Tile = ({tile}) => {
                             src={require("../../../assets/images/plants/" + plant.image )} 
                             alt="test" 
                         />
-                        <p>{plant.time_to_harvest}s</p>
+                        {
+                            status === TILE.HARVEST
+                            ? <p>{plant.reward}$</p>
+                            : <p>{remainingTime !== null ? remainingTime + 1 : plant.time_to_harvest}s</p> 
+                        }
                     </>
                 )}
             </div>

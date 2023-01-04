@@ -1,85 +1,59 @@
-import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { hideSelectPlant } from "../../redux/modal/modal_slice";
-import { plant } from "../../redux/tile/tile_slice";
-
-import Plant from "./plant/plant";
+import { expandLand } from "../../redux/tile/tile_slice";
 import Tile from "./tile/tile"
-import CloseIcon from "../../assets/images/icon/close.svg";
-import Modal from 'react-bootstrap/Modal';
-import { Button } from "react-bootstrap";
-import { PLANTS } from "../../config/constants";
+import SelectPlantModal from "./modals/select_plant_modal";
+import RemovePlantModal from "./modals/remove_plant_modal";
 import styles from "./parmbili.module.scss";
+import { EXPAND_LAND_COST, DEFAULT } from "../../config/constants";
+import { Button } from "react-bootstrap";
 
 const Parmbili = () => {
 
-    const { tiles } = useSelector(state => state.tiles);
-    const { selectPlant } = useSelector(state => state.modals);
-    const [selectedPlantId, setSelectedPlantId] = useState(0);
-
+    const { tiles, earnings, land_square } = useSelector(state => state.tiles);
     const dispatch = useDispatch();
 
-    const onPlantClick = (id) => {
-        setSelectedPlantId(id);
+    const onExpandClick = () => {
+        dispatch(expandLand());
     }
 
-    const onSelectPlantModalClose = () => {
-        setSelectedPlantId(0);
-        dispatch(hideSelectPlant());
-    }
-
-    const onPlantModalClick = () => {
-        dispatch(plant({id: selectPlant.id, plant_id: selectedPlantId}));
-        setSelectedPlantId(0);
-        dispatch(hideSelectPlant());
-    }
+    const dimensionStyle = {
+        4: "x4",
+        5: "x5",
+        6: "x6",
+        7: "x7",
+        8: "x8"
+    };
 
     return (
         <>
             <div>
-                <div className={styles.tiles_container}>
+                <div 
+                    className={`
+                        ${styles.tiles_container} 
+                        ${styles[dimensionStyle[land_square]]}
+                    `}
+                >
                     {tiles.map(tile => <Tile key={tile.id} tile={tile} />)}
                 </div>
-                <p className={styles.earnings}>Total Earnings: 50$</p>
+                <p className={styles.earnings}>Total Earnings: {earnings}$</p>
+                {
+                    (DEFAULT.MAX_LAND_SQUARE > land_square )
+                    ? (
+                        <Button 
+                            className={styles.expand_btn} 
+                            disabled={earnings < EXPAND_LAND_COST[land_square + 1]}
+                            onClick={onExpandClick}
+                        >
+                            <p>Expand Land to {land_square + 1} x {land_square + 1}</p>
+                            <p>{EXPAND_LAND_COST[land_square + 1]}$</p>
+                        </Button> 
+                    )
+                    : null
+                }
+
             </div>
-            <Modal show={selectPlant.modal} centered size="sm" onHide={onSelectPlantModalClose}>
-                <Modal.Body className={styles.modal}>
-                    <button 
-                        type="button" 
-                        className={styles.modal_close}
-                        onClick={onSelectPlantModalClose}
-                    >
-                            <img src={CloseIcon} alt="close-icon" />
-                    </button>
-                    <h3>Select a Crop to Plant</h3>
-                    <div className={styles.modal_plants}>
-                        {
-                            PLANTS.map(plant => (
-                                <Plant 
-                                    key={plant.id}
-                                    plant={plant}
-                                    onClick={onPlantClick} 
-                                    active={selectedPlantId === plant.id}
-                                />
-                            ))
-                        }
-                    </div>
-                    <div className={styles.modal_action}>
-                        <Button 
-                            variant="secondary" 
-                            onClick={onSelectPlantModalClose}
-                        >
-                            Cancel
-                        </Button>
-                        <Button 
-                            variant="primary"
-                            onClick={onPlantModalClick}
-                        >
-                            Plant
-                        </Button>
-                    </div>
-                </Modal.Body>
-            </Modal>
+            <SelectPlantModal />
+            <RemovePlantModal />
         </>
     )
 }
