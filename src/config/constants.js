@@ -24,7 +24,7 @@ export const PLANTS = [
     {
         id: 2,
         name: "onion",
-        time_to_harvest: 80,
+        time_to_harvest: 30,
         cost: 15,
         reward: 25,
         image: "onion.png"
@@ -32,7 +32,7 @@ export const PLANTS = [
     {
         id: 3,
         name: "carrot",
-        time_to_harvest: 120,
+        time_to_harvest: 45,
         cost: 25,
         reward: 75,
         image: "carrot.png"
@@ -40,7 +40,7 @@ export const PLANTS = [
     {
         id: 4,
         name: "corn",
-        time_to_harvest: 180,
+        time_to_harvest: 60,
         cost: 35,
         reward: 100,
         image: "corn.png"
