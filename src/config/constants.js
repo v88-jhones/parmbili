@@ -1,6 +1,6 @@
 
 export const DEFAULT = {
-    EARNINGS: 50,
+    EARNINGS: 50000,
     LAND_SQUARE: 4,
     MAX_LAND_SQUARE: 8
 }

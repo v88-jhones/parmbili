@@ -1,5 +1,17 @@
 @import "../../assets/scss/variables";
 
+.parmbili {
+    padding: 100px 0;
+    height: 100%;
+
+    &_container {
+        display: flex;
+        justify-content: center;
+        max-height: 100vh;
+        overflow-y: auto;
+    }
+}
+
 .tiles_container {
     display: grid;
     gap: 10px;

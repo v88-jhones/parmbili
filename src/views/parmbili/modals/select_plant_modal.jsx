@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { hideSelectPlant } from '../../../redux/modal/modal_slice';
 import { plant } from '../../../redux/tile/tile_slice';
-import Modal from 'react-bootstrap/Modal';
+
+import { Button, Modal } from "react-bootstrap";
+import Plant from '../plant/plant';
+import CloseIcon from "../../../assets/images/icon/close.svg";
 import { PLANTS } from '../../../config/constants';
 import styles from "./modal.module.scss";
-import Plant from '../plant/plant';
-import { Button } from "react-bootstrap";
-import CloseIcon from "../../../assets/images/icon/close.svg";
 
 const SelectPlantModal = () => {
 

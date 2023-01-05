@@ -17,15 +17,12 @@ html {
 
 body {
     background: $color-green;
+    border-left: 22px solid $color-green-dark;
+    border-right: 22px solid $color-green-dark;
     font-family: $font-primary;
     font-weight: 400;
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-    margin: 20px auto;
-    max-width: $bp-medium;
+    height: 100vh;
+    overflow: hidden;
 }
 
 button {
@@ -41,7 +38,12 @@ nav {
     background: $color-green-dark;
     color: #fff;
     font-size: 24px;
-    padding: 20px 30px;
+    left: 0;
+    padding: 7px 30px;
+    position: fixed;
+    top: 0;
+    height: 50px;
+    width: 100%;
 }
 
 .hide {

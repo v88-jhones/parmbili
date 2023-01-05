@@ -2,11 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { till, toHarvest, harvest } from "../../../redux/tile/tile_slice";
 import { showSelectPlant, showRemovePlant } from "../../../redux/modal/modal_slice";
-
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Popover from 'react-bootstrap/Popover';
-import Button from 'react-bootstrap/Button';
-
+import { Popover, Button, OverlayTrigger } from "react-bootstrap"
 import { TILE } from "../../../config/constants";
 import styles from "./tile.module.scss";
 
@@ -14,37 +10,43 @@ const Tile = ({tile}) => {
 
     const {id, status, plant} = tile;
     const [remainingTime, setRemainingTime] = useState(null);
+    const [showPopover, setShowPopover] = useState(false);
 
     const dispatch = useDispatch();
+    const intervalCountDown = useRef(null);
 
-    const interval = useRef(null);
-
+/** 
+ * Interval function that will be triggered if the tile has plant.
+ * Will update the remaining time every seconds 
+ * and if the end/harvest time is reached it will clear 
+ * the interval function and set the tile status in to harvest. 
+ */
     useEffect(() => {
+        const countdown = () => {
+            let current_date = new Date();
+            let end_date = new Date(plant.end_time);
+            let timeRemaining = Math.floor((end_date - current_date) / 1000);
+    
+            if(timeRemaining < 0){
+                dispatch(toHarvest(id))
+                setRemainingTime(0);
+                clearInterval(intervalCountDown.current)
+            }
+            else {
+                setRemainingTime(timeRemaining);
+            }
+        }
 
-            if(plant){
-                interval.current = setInterval(() => {
-
-                    let current_date = new Date();
-                    let end_date = new Date(plant.end_time);
-                    let timeRemaining = Math.floor((end_date - current_date) / 1000);
-
-                    if(timeRemaining < 0){
-                        dispatch(toHarvest(id))
-                        setRemainingTime(0);
-                        clearInterval(interval.current)
-                    }
-                    else {
-                        setRemainingTime(timeRemaining);
-                    }
-            }, 1000);
-            
+        if(plant){
+                intervalCountDown.current = setInterval(countdown, 1000);
         }else {
+            clearInterval(intervalCountDown.current);
             setRemainingTime(null);
         }
     }, [plant, dispatch, id]);
 
-    const [showPopover, setShowPopover] = useState(false);
 
+/** For styling of tiles */
     const statusStyles = {
         [TILE.EMPTY]      : "empty",
         [TILE.TILLED]     : "tilled",
@@ -52,13 +54,11 @@ const Tile = ({tile}) => {
         [TILE.HARVEST]    : "harvest"
     };
 
-
     const togglePopOver = () => {
         setShowPopover(prevState => !prevState);
     }
 
     const onTillClick = () => {
-        togglePopOver();
         dispatch(till(id));
     }
 
@@ -76,8 +76,6 @@ const Tile = ({tile}) => {
         dispatch(showRemovePlant(id));
         togglePopOver()
     }
-
-
 
     const Empty = () => {
         return (
@@ -138,6 +136,7 @@ const Tile = ({tile}) => {
         )
     }
 
+/** Will render button based on the status of the tile */
     const renderButton = {
         [TILE.EMPTY]      : <Empty />,
         [TILE.TILLED]     : <Tilled />,
@@ -160,6 +159,7 @@ const Tile = ({tile}) => {
             overlay={popover}
             onToggle={togglePopOver}
             show={showPopover}
+            rootClose
         >
             <div className={`${styles.tile} ${styles[statusStyles[status]]}`}>
                 {plant && (
@@ -170,8 +170,8 @@ const Tile = ({tile}) => {
                         />
                         {
                             status === TILE.HARVEST
-                            ? <p>{plant.reward}$</p>
-                            : <p>{remainingTime !== null ? remainingTime + 1 : plant.time_to_harvest}s</p> 
+                                ? <p>{plant.reward}$</p>
+                                : <p>{remainingTime !== null ? remainingTime + 1 : plant.time_to_harvest}s</p> 
                         }
                     </>
                 )}
@@ -180,7 +180,4 @@ const Tile = ({tile}) => {
     )
 }
 
-
-
-
-export default Tile
+export default Tile;

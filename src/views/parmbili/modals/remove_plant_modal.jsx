@@ -1,9 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { hideRemovePlant } from '../../../redux/modal/modal_slice';
 import { remove } from '../../../redux/tile/tile_slice';
-import Modal from 'react-bootstrap/Modal';
+import { Button, Modal } from "react-bootstrap";
 import styles from "./modal.module.scss";
-import { Button } from "react-bootstrap";
 
 const RemovePlantModal = () => {
 

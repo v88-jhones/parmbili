@@ -1,11 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { expandLand } from "../../redux/tile/tile_slice";
-import Tile from "./tile/tile"
-import SelectPlantModal from "./modals/select_plant_modal";
-import RemovePlantModal from "./modals/remove_plant_modal";
-import styles from "./parmbili.module.scss";
-import { EXPAND_LAND_COST, DEFAULT } from "../../config/constants";
 import { Button } from "react-bootstrap";
+import Tile from "./tile/tile"
+import { EXPAND_LAND_COST, DEFAULT } from "../../config/constants";
+import styles from "./parmbili.module.scss";
 
 const Parmbili = () => {
 
@@ -25,14 +23,9 @@ const Parmbili = () => {
     };
 
     return (
-        <>
-            <div>
-                <div 
-                    className={`
-                        ${styles.tiles_container} 
-                        ${styles[dimensionStyle[land_square]]}
-                    `}
-                >
+        <div className={styles.parmbili_container}>
+            <div className={styles.parmbili}>
+                <div className={`${styles.tiles_container} ${styles[dimensionStyle[land_square]]}`}>
                     {tiles.map(tile => <Tile key={tile.id} tile={tile} />)}
                 </div>
                 <p className={styles.earnings}>Total Earnings: {earnings}$</p>
@@ -50,11 +43,8 @@ const Parmbili = () => {
                     )
                     : null
                 }
-
             </div>
-            <SelectPlantModal />
-            <RemovePlantModal />
-        </>
+        </div>
     )
 }
 

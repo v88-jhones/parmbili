@@ -20,17 +20,13 @@ const Plant = (props) => {
 
     const clickHandler = () => {
         if(!disabled){
-            onClick(id)
+            onClick(id);
         }
     }
 
     return (
         <div 
-            className={`
-                ${styles.plant} 
-                ${active ? styles.active : ''}
-                ${disabled ? styles.disabled : ''}
-            `}
+            className={`${styles.plant} ${active ? styles.active : ''} ${disabled ? styles.disabled : ''}`}
             onClick={clickHandler}
         >
             <img src={require(`../../../assets/images/plants/${image}`)} alt={name} />

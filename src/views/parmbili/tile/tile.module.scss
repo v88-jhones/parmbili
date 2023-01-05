@@ -1,13 +1,14 @@
 @import "../../../assets/scss/variables";
 
 .tile {
-    height: 100px;
-    width: 100px;
     background: $color-grey-light;
     border-radius: 10px;
     cursor: pointer;
+    height: 100px;
+    overflow: hidden;
     padding: 10px 0;
     text-align: center;
+    width: 100px;
 
     &.empty {
         background: $color-grey;
@@ -46,8 +47,8 @@
     padding: 10px;
 
     &_btn {
-        padding: 5px 40px;
         font-family: $font-primary;
         font-size: 21px;
+        padding: 5px 40px;
     }
 }
