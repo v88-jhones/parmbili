@@ -7,7 +7,7 @@ import { Button, Modal } from "react-bootstrap";
 import Plant from '../plant/plant';
 import CloseIcon from "../../../assets/images/icon/close.svg";
 import { PLANTS } from '../../../config/constants';
-import styles from "./modal.module.scss";
+import "./modal.scss";
 
 const SelectPlantModal = () => {
 
@@ -34,16 +34,16 @@ const SelectPlantModal = () => {
 
     return (
         <Modal show={selectPlant.modal} centered size="sm" onHide={closeHandler}>
-            <Modal.Body className={styles.modal}>
+            <Modal.Body className="modals">
                 <button 
                     type="button" 
-                    className={styles.modal_close}
+                    className="modals_close"
                     onClick={closeHandler}
                 >
                         <img src={CloseIcon} alt="close-icon" />
                 </button>
-                <h3 className={styles.select}>Select a Crop to Plant</h3>
-                <div className={styles.modal_plants}>
+                <h3 className="select">Select a Crop to Plant</h3>
+                <div className="modals_plants">
                     {
                         PLANTS.map(plant => (
                             <Plant 
@@ -56,7 +56,7 @@ const SelectPlantModal = () => {
                         ))
                     }
                 </div>
-                <div className={styles.modal_action}>
+                <div className="modals_action">
                     <Button 
                         variant="secondary" 
                         onClick={closeHandler}

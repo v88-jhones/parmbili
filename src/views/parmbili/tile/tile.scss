@@ -1,0 +1,54 @@
+@import "../../../assets/scss/variables";
+
+.tile {
+    background: $color-grey-light;
+    border-radius: 10px;
+    cursor: pointer;
+    height: 100px;
+    overflow: hidden;
+    padding: 10px 0;
+    text-align: center;
+    width: 100px;
+
+    &.empty {
+        background: $color-grey;
+    }
+
+    &.tilled {
+        background: $color-brown;
+    }
+
+    &.has_plant {
+        background: $color-yellow;
+    }
+
+    &.harvest {
+        background: $color-green-dark;
+        color: $color-white;
+    }
+
+    img {
+        height: 75%;
+        width: auto;
+    }
+
+    p {
+        font-size: 12px;
+    }
+}
+
+.harvest_actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.popover {
+    padding: 10px;
+
+    &_btn {
+        font-family: $font-primary;
+        font-size: 21px;
+        padding: 5px 40px;
+    }
+}

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { hideRemovePlant } from '../../../redux/modal/modal_slice';
 import { remove } from '../../../redux/tile/tile_slice';
 import { Button, Modal } from "react-bootstrap";
-import styles from "./modal.module.scss";
+import "./modal.scss";
 
 const RemovePlantModal = () => {
 
@@ -21,10 +21,10 @@ const RemovePlantModal = () => {
 
     return (
         <Modal show={removePlant.modal} centered size="sm" onHide={closeHandler}>
-            <Modal.Body className={styles.modal}>
-                <h3 className={styles.remove}>Remove Plant</h3>
+            <Modal.Body className="modals">
+                <h3 className="remove">Remove Plant</h3>
                 <p>Are you sure you want to remove this plant?</p>
-                <div className={styles.modal_action}>
+                <div className="modals_action">
                     <Button 
                         variant="danger" 
                         onClick={closeHandler}

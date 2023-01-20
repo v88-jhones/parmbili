@@ -1,4 +1,4 @@
-import styles from "./plant.module.scss";
+import "./plant.scss";
 
 const Plant = (props) => {
 
@@ -26,7 +26,7 @@ const Plant = (props) => {
 
     return (
         <div 
-            className={`${styles.plant} ${active ? styles.active : ''} ${disabled ? styles.disabled : ''}`}
+            className={`plant ${active ? "active" : ''} ${disabled ? "disabled" : ''}`}
             onClick={clickHandler}
         >
             <img src={require(`../../../assets/images/plants/${image}`)} alt={name} />
