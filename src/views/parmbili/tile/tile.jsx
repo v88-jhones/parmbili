@@ -6,6 +6,66 @@ import { Popover, Button, OverlayTrigger } from "react-bootstrap"
 import { TILE } from "../../../config/constants";
 import styles from "./tile.module.scss";
 
+
+const Empty = ({onTillClick}) => {
+    return (
+        <Button 
+            variant="primary" 
+            className={styles.popover_btn}
+            onClick={onTillClick}
+        >
+            Till
+        </Button>
+    )
+}
+
+const Tilled = ({onPlantClick}) => {
+    return (
+        <Button 
+            variant="primary" 
+            className={styles.popover_btn}
+            onClick={onPlantClick}
+        >
+            Plant
+        </Button>
+    )
+}
+
+const HasPlant = ({onRemoveClick}) => {
+    return (
+        <Button 
+            variant="secondary" 
+            className={styles.popover_btn}
+            onClick={onRemoveClick}
+        >
+            Remove
+        </Button>
+    )
+}
+
+const Harvest = ({onHarvestClick, onRemoveCLick}) => {
+    return (
+        <>
+            <div className={styles.harvest_actions}>
+                <Button 
+                    variant="primary" 
+                    className={styles.popover_btn}
+                    onClick={onHarvestClick}
+                >
+                    Harvest
+                </Button>
+                <Button 
+                    variant="secondary" 
+                    className={styles.popover_btn}
+                    onClick={onRemoveCLick}
+                >
+                    Remove
+                </Button>
+            </div>
+        </>
+    )
+}
+
 const Tile = ({tile}) => {
 
     const {id, status, plant} = tile;
@@ -77,71 +137,12 @@ const Tile = ({tile}) => {
         togglePopOver()
     }
 
-    const Empty = () => {
-        return (
-            <Button 
-                variant="primary" 
-                className={styles.popover_btn}
-                onClick={onTillClick}
-            >
-                Till
-            </Button>
-        )
-    }
-
-    const Tilled = () => {
-        return (
-            <Button 
-                variant="primary" 
-                className={styles.popover_btn}
-                onClick={onPlantClick}
-            >
-                Plant
-            </Button>
-        )
-    }
-    
-    const HasPlant = () => {
-        return (
-            <Button 
-                variant="secondary" 
-                className={styles.popover_btn}
-                onClick={onRemoveClick}
-            >
-                Remove
-            </Button>
-        )
-    }
-
-    const Harvest = () => {
-        return (
-            <>
-                <div className={styles.harvest_actions}>
-                    <Button 
-                        variant="primary" 
-                        className={styles.popover_btn}
-                        onClick={onHarvestClick}
-                    >
-                        Harvest
-                    </Button>
-                    <Button 
-                        variant="secondary" 
-                        className={styles.popover_btn}
-                        onClick={onRemoveClick}
-                    >
-                        Remove
-                    </Button>
-                </div>
-            </>
-        )
-    }
-
 /** Will render button based on the status of the tile */
     const renderButton = {
-        [TILE.EMPTY]      : <Empty />,
-        [TILE.TILLED]     : <Tilled />,
-        [TILE.HAS_PLANT]  : <HasPlant />,
-        [TILE.HARVEST]    : <Harvest />
+        [TILE.EMPTY]      : <Empty onTillClick={onTillClick} />,
+        [TILE.TILLED]     : <Tilled onPlantClick={onPlantClick} />,
+        [TILE.HAS_PLANT]  : <HasPlant onRemoveClick={onRemoveClick} />,
+        [TILE.HARVEST]    : <Harvest onHarvestClick={onHarvestClick} onRemoveCLick={onRemoveClick} />
     };
 
     const popover = (

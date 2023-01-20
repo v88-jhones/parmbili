@@ -9,7 +9,8 @@ const initialState = {
 };
 
 /** Will create tiles as starter based on the squared of the default land square */
-for(let i = 1; i <= Math.pow(initialState.land_square, 2); i++){
+let initial_tile_count = Math.pow(initialState.land_square, 2)
+for(let i = 1; i <= initial_tile_count; i++){
     initialState.tiles.push({
             id: i + TileService.generateId(),
             status: TILE.EMPTY,

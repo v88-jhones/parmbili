@@ -9,7 +9,8 @@ import { TILE, PLANTS, EXPAND_LAND_COST } from "../../config/constants";
 * @author Jhones 
 */
 const till = (state, action) => {
-    let tile = state.tiles.find(tile => tile.id === action.payload);
+    let tile_id = action.payload;
+    let tile = state.tiles.find(tile => tile.id === tile_id);
     tile.status = TILE.TILLED;
 }
 
@@ -22,8 +23,10 @@ const till = (state, action) => {
 * @author Jhones 
 */
 const plant = (state, action) => {
-    let tile = state.tiles.find(tile => tile.id === action.payload.id);
-    let plant = PLANTS.find(plant => plant.id === action.payload.plant_id);
+    let {id, plant_id} = action.payload;
+
+    let tile = state.tiles.find(tile => tile.id === id);
+    let plant = PLANTS.find(plant => plant.id === plant_id);
     let end_date = new Date();
     end_date.setSeconds(end_date.getSeconds() + plant.time_to_harvest);
 
@@ -43,7 +46,8 @@ const plant = (state, action) => {
 * @author Jhones 
 */
 const remove = (state, action) => {
-    let tile = state.tiles.find(tile => tile.id === action.payload);
+    let tile_id = action.payload;
+    let tile = state.tiles.find(tile => tile.id === tile_id);
     tile.status = TILE.EMPTY;
     tile.plant = null;
 }
@@ -57,7 +61,8 @@ const remove = (state, action) => {
 * @author Jhones 
 */
 const toHarvest = (state, action) => {
-    let tile = state.tiles.find(tile => tile.id === action.payload);
+    let tile_id = action.payload;
+    let tile = state.tiles.find(tile => tile.id === tile_id);
     tile.status = TILE.HARVEST;
 }
 
@@ -70,7 +75,8 @@ const toHarvest = (state, action) => {
 * @author Jhones 
 */
 const harvest = (state, action) => {
-    let tile = state.tiles.find(tile => tile.id === action.payload);
+    let tile_id = action.payload;
+    let tile = state.tiles.find(tile => tile.id === tile_id);
     tile.status = TILE.EMPTY;
     state.earnings += tile.plant.reward;
     tile.plant = null;
@@ -85,7 +91,9 @@ const harvest = (state, action) => {
 */
 const expandLand = (state) => {
     state.land_square++;
-    let tileCountDiff = Math.pow(state.land_square, 2) - Math.pow(state.land_square - 1, 2);
+    let currentTileCount = Math.pow(state.land_square-1, 2);
+    let futureTileCount = Math.pow(state.land_square, 2);
+    let tileCountDiff = futureTileCount - currentTileCount;
     for(let i = 1; i <= tileCountDiff; i++){
         state.tiles.push({
                 id: i + generateId(),

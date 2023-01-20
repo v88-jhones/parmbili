@@ -7,8 +7,8 @@
 * @author Jhones 
 */
 const showSelectPlant = (state, action) => {
-            state.selectPlant.modal = true;
-            state.selectPlant.id = action.payload;
+    state.selectPlant.modal = true;
+    state.selectPlant.id = action.payload;
 }
 
 /**
@@ -19,8 +19,8 @@ const showSelectPlant = (state, action) => {
 * @author Jhones 
 */
 const hideSelectPlant = (state) => {
-            state.selectPlant.modal = false;
-            state.selectPlant.id = 0;
+    state.selectPlant.modal = false;
+    state.selectPlant.id = 0;
 }
 
 /**
@@ -32,8 +32,8 @@ const hideSelectPlant = (state) => {
 * @author Jhones 
 */
 const showRemovePlant = (state,action) => {
-            state.removePlant.modal = true;
-            state.removePlant.id = action.payload;
+    state.removePlant.modal = true;
+    state.removePlant.id = action.payload;
 }
 
 /**
