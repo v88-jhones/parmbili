@@ -4,7 +4,7 @@ import { till, toHarvest, harvest } from "../../../redux/tile/tile_slice";
 import { showSelectPlant, showRemovePlant } from "../../../redux/modal/modal_slice";
 import { Popover, Button, OverlayTrigger } from "react-bootstrap"
 import { TILE } from "../../../config/constants";
-import styles from "./tile.module.scss";
+import "./tile.scss";
 
 const Tile = ({tile}) => {
 
@@ -81,7 +81,7 @@ const Tile = ({tile}) => {
         return (
             <Button 
                 variant="primary" 
-                className={styles.popover_btn}
+                className="popover_btn"
                 onClick={onTillClick}
             >
                 Till
@@ -93,7 +93,7 @@ const Tile = ({tile}) => {
         return (
             <Button 
                 variant="primary" 
-                className={styles.popover_btn}
+                className="popover_btn"
                 onClick={onPlantClick}
             >
                 Plant
@@ -105,7 +105,7 @@ const Tile = ({tile}) => {
         return (
             <Button 
                 variant="secondary" 
-                className={styles.popover_btn}
+                className="popover_btn"
                 onClick={onRemoveClick}
             >
                 Remove
@@ -116,17 +116,17 @@ const Tile = ({tile}) => {
     const Harvest = () => {
         return (
             <>
-                <div className={styles.harvest_actions}>
+                <div className="harvest_actions">
                     <Button 
                         variant="primary" 
-                        className={styles.popover_btn}
+                        className="popover_btn"
                         onClick={onHarvestClick}
                     >
                         Harvest
                     </Button>
                     <Button 
                         variant="secondary" 
-                        className={styles.popover_btn}
+                        className="popover_btn"
                         onClick={onRemoveClick}
                     >
                         Remove
@@ -146,7 +146,7 @@ const Tile = ({tile}) => {
 
     const popover = (
         <Popover>
-            <Popover.Body className={styles.popover}>
+            <Popover.Body className="popover">
                 {renderButton[status]}
             </Popover.Body>
         </Popover>
@@ -161,7 +161,7 @@ const Tile = ({tile}) => {
             show={showPopover}
             rootClose
         >
-            <div className={`${styles.tile} ${styles[statusStyles[status]]}`}>
+            <div className={`tile ${statusStyles[status]}`}>
                 {plant && (
                     <>
                         <img 
