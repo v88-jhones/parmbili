@@ -1,0 +1,10 @@
+{
+    "DEFAULT": {
+        "link": "http://localhost:3000/",
+        "screen": { 
+                "width": 1552,
+                "height": 832
+        },
+        "timeout": 180000
+    }
+}
