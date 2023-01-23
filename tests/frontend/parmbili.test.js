@@ -33,14 +33,44 @@ describe('Parmbili Unit Test', function() {
         await driver.quit();
     });
 
+    const plantCrop = async (tile, plant) => {
+        let popover_plant = By.css(".popover .popover_btn");
+        let modal_plant = By.css(".modals_plants .plant");
+        let plant_btn = By.css(".btn:nth-child(2)");
+
+        await driver.findElement(tile).click();
+        await driver.wait(until.elementLocated(popover_plant), 60000)
+        await driver.findElement(popover_plant).click();
+        await driver.wait(until.elementLocated(popover_plant), 60000)
+        await driver.findElement(popover_plant).click();
+        await driver.wait(until.elementLocated(modal_plant), 60000)
+        await driver.sleep(1000);
+        await driver.findElement(plant).click();
+        await driver.findElement(plant_btn).click();
+    }
+
+    const harvestCrop = async (tile) => {
+        let popover_harvest = By.css(".popover .popover_btn");
+        let harvest_btn = By.css(".popover_btn:nth-child(1)");
+
+        await driver.findElement(tile).click();
+        await driver.wait(until.elementLocated(popover_harvest), 60000)
+        await driver.findElement(harvest_btn).click();
+        await driver.sleep(500);
+    }
+
     it('Till', async function() {
-        await driver.findElement(By.css(".tile:nth-child(1)")).click();
-        await driver.wait(until.elementLocated(By.css(".popover .popover_btn")), 30000)
+        let first_tile = By.css(".tile:nth-child(1)");
+        let popver_btn = By.css(".popover .popover_btn")
+
+        await driver.findElement(first_tile).click();
+        await driver.wait(until.elementLocated(popver_btn), 30000)
         await driver.findElement(By.css(".popover_btn")).click();
     })
 
     it('Plant', async function() {
-         await driver.findElement(By.css(".popover_btn")).click();
+        let popver_btn = By.css(".popover_btn")
+        await driver.findElement(popver_btn).click();
     })
 
     it('Cancel Plant', async function() {
@@ -48,91 +78,97 @@ describe('Parmbili Unit Test', function() {
     })
 
     it('Confirm Plant', async function() {
-        await driver.findElement(By.css(".tilled")).click();
-        await driver.wait(until.elementLocated(By.css(".popover .popover_btn")), 60000)
-        await driver.findElement(By.css(".popover_btn")).click();
-        await driver.wait(until.elementLocated(By.css(".modals .plant")), 60000)
-        await driver.findElement(By.css(".plant:nth-child(1)")).click();
-        await driver.findElement(By.css(".btn:nth-child(2)")).click();
-        const elements = await driver.findElements(By.css(".has_plant"));
+        let tilled = By.css(".tilled");
+        let potato = By.css(".plant:nth-child(1)");
+        let has_plant = By.css(".has_plant");
+        let earnings = By.css(".earnings");
+
+        await plantCrop(tilled, potato);
+        const elements = await driver.findElements(has_plant);
         assert(elements.length)
-        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 40$");
+        assert(await driver.findElement(earnings).getText() == "Total Earnings: 40$");
     })
 
     it('Remove', async function() {
-         await driver.findElement(By.css(".has_plant")).click();
-         await driver.wait(until.elementLocated(By.css(".popover .btn-secondary")), 60000)
-         await driver.findElement(By.css(".btn-secondary")).click();
+        let has_plant = By.css(".has_plant");
+        let popover_remove_btn = By.css(".popover .btn-secondary");
+
+        await driver.findElement(has_plant).click();
+        await driver.wait(until.elementLocated(popover_remove_btn), 60000)
+        await driver.findElement(popover_remove_btn).click();
     })
 
     it('Cancel Remove', async function() {
-        await driver.findElement(By.css(".btn-danger")).click();
+        let cancel_btn = By.css(".btn-danger");
+        await driver.findElement(cancel_btn).click();
     })
 
     it('Confirm Remove', async function() {
-        await driver.findElement(By.css(".tile.has_plant")).click();
-        await driver.wait(until.elementLocated(By.css(".popover .btn-secondary")), 60000)
-        await driver.findElement(By.css(".btn-secondary")).click();
-        await driver.wait(until.elementLocated(By.css(".modals_action > .btn-secondary")), 60000)
-        await driver.findElement(By.css(".modals_action > .btn-secondary")).click();
-        const elements = await driver.findElements(By.css(".has_plant"));
+        let has_plant = By.css(".tile.has_plant");
+        let popver_remove_btn = By.css(".popover .btn-secondary");
+        let modal_remove_btn = By.css(".modals_action > .btn-secondary");
+
+        await driver.findElement(has_plant).click();
+        await driver.wait(until.elementLocated(popver_remove_btn), 60000)
+        await driver.findElement(popver_remove_btn).click();
+        await driver.wait(until.elementLocated(modal_remove_btn), 60000)
+        await driver.findElement(modal_remove_btn).click();
+        const elements = await driver.findElements(has_plant);
         assert(!elements.length);
     })
 
     it("Plant corn", async function (){
-        await driver.findElement(By.css(".tile:nth-child(1)")).click();
-        await driver.wait(until.elementLocated(By.css(".popover .popover_btn")), 60000)
-        await driver.findElement(By.css(".popover_btn")).click();
-        await driver.wait(until.elementLocated(By.css(".popover .popover_btn")), 60000)
-        await driver.findElement(By.css(".popover_btn")).click();
-        await driver.wait(until.elementLocated(By.css(".modals_plants .plant")), 60000)
-        await driver.findElement(By.css(".plant:nth-child(4)")).click();
-        await driver.findElement(By.css(".btn:nth-child(2)")).click();
-        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 5$");
+        let first_tile = By.css(".tile:nth-child(1)");
+        let corn = By.css(".plant:nth-child(4)");
+        let earnings = By.css(".earnings");
+
+        await plantCrop(first_tile, corn);
+        assert(await driver.findElement(earnings).getText() == "Total Earnings: 5$");
     })
 
     it("Harvest corn", async function (){
+        let first_tile = By.css(".tile:nth-child(1)");
+        let earnings = By.css(".earnings");
+
         await driver.wait(until.elementLocated(By.css(".harvest")), 60000)
-        await driver.findElement(By.css(".tile:nth-child(1)")).click();
-        await driver.wait(until.elementLocated(By.css(".popover .popover_btn")), 60000)
-        await driver.findElement(By.css(".popover_btn:nth-child(1)")).click();
-        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 105$");
+        await harvestCrop(first_tile);
+        assert(await driver.findElement(earnings).getText() == "Total Earnings: 105$");
     })
 
     it("Plant Two corns", async function (){
-        await driver.findElement(By.css(".tile:nth-child(1)")).click();
-        await driver.wait(until.elementLocated(By.css(".popover .popover_btn")), 60000)
-        await driver.findElement(By.css(".popover_btn")).click();
-        await driver.findElement(By.css(".popover_btn")).click();
-        await driver.findElement(By.css(".plant:nth-child(4)")).click();
-        await driver.findElement(By.css(".btn:nth-child(2)")).click();
-        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 70$");
-        await driver.findElement(By.css(".tile:nth-child(2)")).click();
-        await driver.wait(until.elementLocated(By.css(".popover .popover_btn")), 60000)
-        await driver.findElement(By.css(".popover_btn")).click();
-        await driver.findElement(By.css(".popover_btn")).click();
-        await driver.findElement(By.css(".plant:nth-child(4)")).click();
-        await driver.findElement(By.css(".btn:nth-child(2)")).click();
-        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 35$");
+        let first_tile = By.css(".tile:nth-child(1)");
+        let second_tile = By.css(".tile:nth-child(2)");
+        let corn = By.css(".plant:nth-child(4)");
+        let earnings = By.css(".earnings");
+        
+        await plantCrop(first_tile, corn);
+        assert(await driver.findElement(earnings).getText() == "Total Earnings: 70$");
+
+        await plantCrop(second_tile, corn);
+        assert(await driver.findElement(earnings).getText() == "Total Earnings: 35$");
     })
 
     it("Harvest two corns", async function (){
-        await driver.wait(until.elementLocated(By.css(".harvest")), 60000)
-        await driver.findElement(By.css(".harvest")).click();
-        await driver.wait(until.elementLocated(By.css(".popover .popover_btn")), 60000)
-        await driver.findElement(By.css(".popover_btn:nth-child(1)")).click();
-        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 135$");
-        await driver.wait(until.elementLocated(By.css(".harvest")), 60000)
-        await driver.findElement(By.css(".harvest")).click();
-        await driver.wait(until.elementLocated(By.css(".popover .popover_btn")), 60000)
-        await driver.findElement(By.css(".popover_btn:nth-child(1)")).click();
-        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 235$");
+        let harvest_tile = By.css(".harvest");
+        let earnings = By.css(".earnings");
+
+        await driver.wait(until.elementLocated(harvest_tile), 60000)
+        await harvestCrop(harvest_tile);
+        assert(await driver.findElement(earnings).getText() == "Total Earnings: 135$");
+    
+        await driver.wait(until.elementLocated(harvest_tile), 60000)
+        await harvestCrop(harvest_tile);
+        assert(await driver.findElement(earnings).getText() == "Total Earnings: 235$");
     })
 
     it("Expand land", async function (){
-        await driver.findElement(By.css(".expand_btn")).click();
-        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 55$");
-        const elements = await driver.findElements(By.css(".tile:nth-child(25)"));
+        let expand_btn = By.css(".expand_btn");
+        let earnings = By.css(".earnings");
+        let tile_25th = By.css(".tile:nth-child(25)");
+
+        await driver.findElement(expand_btn).click();
+        assert(await driver.findElement(earnings).getText() == "Total Earnings: 55$");
+        const elements = await driver.findElements(tile_25th);
         assert(elements.length);
     })
 })
