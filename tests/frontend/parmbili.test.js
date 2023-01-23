@@ -33,18 +33,21 @@ describe('Parmbili Unit Test', function() {
         await driver.quit();
     });
 
-    const plantCrop = async (tile, plant) => {
+    const plantCrop = async (tile, targetPlant, isTilled = true) => {
         let popover_plant = By.css(".popover .popover_btn");
         let modal_plant = By.css(".modals_plants .plant");
         let plant_btn = By.css(".btn:nth-child(2)");
+        let plant = By.css(targetPlant);
 
         await driver.findElement(tile).click();
         await driver.wait(until.elementLocated(popover_plant), 60000)
         await driver.findElement(popover_plant).click();
-        await driver.wait(until.elementLocated(popover_plant), 60000)
-        await driver.findElement(popover_plant).click();
-        await driver.wait(until.elementLocated(modal_plant), 60000)
-        await driver.sleep(1000);
+
+        if(!isTilled){
+            await driver.findElement(popover_plant).click();
+        }
+
+        await driver.wait(until.elementLocated(modal_plant), 60000);
         await driver.findElement(plant).click();
         await driver.findElement(plant_btn).click();
     }
@@ -79,11 +82,10 @@ describe('Parmbili Unit Test', function() {
 
     it('Confirm Plant', async function() {
         let tilled = By.css(".tilled");
-        let potato = By.css(".plant:nth-child(1)");
         let has_plant = By.css(".has_plant");
         let earnings = By.css(".earnings");
 
-        await plantCrop(tilled, potato);
+        await plantCrop(tilled, DEFAULT.plants.potato);
         const elements = await driver.findElements(has_plant);
         assert(elements.length)
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 40$");
@@ -119,10 +121,9 @@ describe('Parmbili Unit Test', function() {
 
     it("Plant corn", async function (){
         let first_tile = By.css(".tile:nth-child(1)");
-        let corn = By.css(".plant:nth-child(4)");
         let earnings = By.css(".earnings");
 
-        await plantCrop(first_tile, corn);
+        await plantCrop(first_tile, DEFAULT.plants.corn, false);
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 5$");
     })
 
@@ -138,13 +139,12 @@ describe('Parmbili Unit Test', function() {
     it("Plant Two corns", async function (){
         let first_tile = By.css(".tile:nth-child(1)");
         let second_tile = By.css(".tile:nth-child(2)");
-        let corn = By.css(".plant:nth-child(4)");
         let earnings = By.css(".earnings");
         
-        await plantCrop(first_tile, corn);
+        await plantCrop(first_tile, DEFAULT.plants.corn, false);
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 70$");
-
-        await plantCrop(second_tile, corn);
+        await driver.sleep(300);
+        await plantCrop(second_tile, DEFAULT.plants.corn, false);
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 35$");
     })
 
