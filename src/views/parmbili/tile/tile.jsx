@@ -166,7 +166,7 @@ const Tile = ({tile}) => {
                     <>
                         <img 
                             src={require("../../../assets/images/plants/" + plant.image )} 
-                            alt="test" 
+                            alt={plant.name} 
                         />
                         {
                             status === TILE.HARVEST

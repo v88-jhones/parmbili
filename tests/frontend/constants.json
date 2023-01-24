@@ -11,6 +11,8 @@
             "carrot": ".plant:nth-child(3)",
             "corn": ".plant:nth-child(4)"
         },
-        "timeout": 180000
+        "timeout": 180000,
+        "harvest_wait_time": 70000,
+        "wait_time": 30000
     }
 }

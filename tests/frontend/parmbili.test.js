@@ -10,9 +10,13 @@ chrome_options.addArguments("--disable-gpu");
 chrome_options.addArguments("--headless"); 
 chrome_options.addArguments("--blink-settings=imagesEnabled=false"); 
 
-/* Command to run test: NODE_ENV=development ./node_modules/.bin/mocha tests/frontend/*.test.js */
-
-describe('Parmbili Unit Test', function() {
+/** 
+*   DOCU: Will unit test the parmbili activity. <br>
+*   Command to run the test: NODE_ENV=development ./node_modules/.bin/mocha tests/frontend/*.test.js
+*   Last updated at: January 24, 2023
+*   @author Jhones
+*/
+describe("Parmbili Unit Test", function(){
     this.timeout(DEFAULT.timeout);
     let driver;
 
@@ -29,160 +33,227 @@ describe('Parmbili Unit Test', function() {
         await driver.sleep(1000);
     });
 
-    after(async function() {
+    after(async function(){
         await driver.quit();
     });
 
-    /* This will plant a crop in a specified tile */
+    /** 
+    *   DOCU: Will wait for selected element to exists and assert it. <br>
+    *   Last updated at: January 24, 2023
+    *   @param {object} element the element to assert
+    *   @author Jhones
+    */
+    const assertElementExist = async (element, delay = 500) => {
+        await driver.wait(until.elementLocated(element), DEFAULT.wait_time);
+        const search_input_field = await driver.findElements(element);
+        assert(search_input_field.length);
+        await driver.wait(until.elementIsVisible(await driver.findElement(element)), DEFAULT.wait_time);
+        await driver.sleep(delay);
+    }
+
+    /** 
+    *   DOCU: Will assert if the element is not exists. <br>
+    *   Last updated at: January 24, 2023
+    *   @param {object} element the element to assert 
+    *   @param {object} delay optional, default is 500. The delay before checking.
+    *   @author Jhones
+    */
+    const assertElementNotExist = async (element, delay = 500) => {
+        await driver.sleep(delay);
+        const elements = await driver.findElements(element);
+        assert(!elements.length);
+    }
+
+    /** 
+    *   DOCU: This will plant a crop in a specified tile. <br>
+    *   Last updated at: January 24, 2023
+    *   @param {object} tile the tile element where the crop will be planted
+    *   @param {string} targetPlant the css selector of the crop to be plant.
+    *   @param {boolean} isTilled the status of the tile.
+    *   @author Jhones
+    */
     const plantCrop = async (tile, targetPlant, isTilled = true) => {
         let popover_plant = By.css(".popover .popover_btn");
         let modal_plant = By.css(".modals_plants .plant");
-        let plant_btn = By.css(".btn:nth-child(2)");
-        let plant = By.css(targetPlant);
 
         await driver.findElement(tile).click();
-        await driver.wait(until.elementLocated(popover_plant), 60000)
+        await assertElementExist(popover_plant);
         await driver.findElement(popover_plant).click();
 
         if(!isTilled){
             await driver.findElement(popover_plant).click();
         }
 
-        await driver.wait(until.elementLocated(modal_plant), 60000);
-        await driver.findElement(plant).click();
-        await driver.findElement(plant_btn).click();
+        await assertElementExist(modal_plant);
+        await driver.findElement(By.css(targetPlant)).click();
+        await assertElementExist(By.css(".plant.active"));
+        await driver.findElement(By.css(".btn:nth-child(2)")).click();
+        await assertElementExist(By.css(".tile.has_plant"));
     }
 
-    /* This will harvest plant in a specified tile */
+    /** 
+    *   DOCU: This will harvest plant in a specified tile. <br>
+    *   Last updated at: January 24, 2023
+    *   @param {object} tile the tile element to be harvest.
+    *   @author Jhones
+    */
     const harvestCrop = async (tile) => {
-        let popover_harvest = By.css(".popover .popover_btn");
         let harvest_btn = By.css(".popover_btn:nth-child(1)");
-
+        await driver.wait(until.elementLocated(tile), DEFAULT.harvest_wait_time);
         await driver.findElement(tile).click();
-        await driver.wait(until.elementLocated(popover_harvest), 60000)
+        await assertElementExist(By.css(".popover .popover_btn"));
         await driver.findElement(harvest_btn).click();
+        await assertElementExist(harvest_btn);
         await driver.sleep(500);
     }
-
-    /* Will till the tile */
-    it('Till', async function() {
-        let first_tile = By.css(".tile:nth-child(1)");
-        let popver_btn = By.css(".popover .popover_btn")
-
-        await driver.findElement(first_tile).click();
-        await driver.wait(until.elementLocated(popver_btn), 30000)
+        
+    /** 
+    *   DOCU: Will till the tile. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can click the tile and show popover to till the tile.", async () => {
+        await driver.findElement(By.css(".tile:nth-child(1)")).click();
+        await assertElementExist(By.css(".popover .popover_btn"));
         await driver.findElement(By.css(".popover_btn")).click();
+        await assertElementExist(By.css(".tile.tilled"));
     })
 
-    /* Will plant on tilled tile */
-    it('Plant', async function() {
-        let popver_btn = By.css(".popover_btn")
-        await driver.findElement(popver_btn).click();
+    /** 
+    *   DOCU: Will plant on tilled tile. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can plant on tilled tile.", async function(){
+        await driver.findElement(By.css(".popover_btn")).click();
+        await assertElementExist(By.css(".modals_plants"));
     })
 
-    /* Will cancel plant action */
-    it('Cancel Plant', async function() {
-         await driver.findElement(By.css(".btn-secondary")).click();
+    /** 
+    *   DOCU: Will cancel plant action and close the modal. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can cancel the plant action by clicking the cancel button on plant modal.", async function(){
+        await driver.findElement(By.css(".btn-secondary")).click();
+        await assertElementNotExist(By.css(".modals_plants"));
     })
 
-    /* Will plant a selected crop on tilled tile */
-    it('Confirm Plant', async function() {
-        let tilled = By.css(".tilled");
-        let has_plant = By.css(".has_plant");
-        let earnings = By.css(".earnings");
-
-        await plantCrop(tilled, DEFAULT.plants.potato);
-        const elements = await driver.findElements(has_plant);
-        assert(elements.length)
-        assert(await driver.findElement(earnings).getText() == "Total Earnings: 40$");
+    /** 
+    *   DOCU: Will plant a selected crop on tilled tile. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can plant a selected crop from plant modal.", async function(){
+        await plantCrop(By.css(".tilled"), DEFAULT.plants.potato);
+        const elements = await driver.findElements(By.css(".has_plant"));
+        assert(elements.length);
+        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 40$");
     })
 
-    /* Will click the onprogress plant and show the remove popover */
-    it('Remove', async function() {
-        let has_plant = By.css(".has_plant");
+    /** 
+    *   DOCU: Will click the on-progress plant and show the remove popover. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can show the remove popover when clicked on planted till.", async function(){
         let popover_remove_btn = By.css(".popover .btn-secondary");
 
-        await driver.findElement(has_plant).click();
-        await driver.wait(until.elementLocated(popover_remove_btn), 60000)
+        await driver.findElement(By.css(".has_plant")).click();
+        await driver.wait(until.elementLocated(popover_remove_btn), DEFAULT.wait_time);
+        await assertElementExist(popover_remove_btn);
         await driver.findElement(popover_remove_btn).click();
+        await assertElementExist(By.css(".modals .remove"));
     })
 
-    /* Will cancel the remove popover*/
-    it('Cancel Remove', async function() {
-        let cancel_btn = By.css(".btn-danger");
-        await driver.findElement(cancel_btn).click();
+    /** 
+    *   DOCU: Will cancel the remove popover. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can cancel the remove action when cancel button is clicked on remove modal", async function(){
+        await driver.findElement(By.css(".btn-danger")).click();
+        await assertElementNotExist(By.css(".modals .remove"));
     })
 
-    /* Will remove the crop/plant in tile */
-    it('Confirm Remove', async function() {
+    /** 
+    *   DOCU: Will remove the crop/plant in tile. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can remove the plant on tile if remove button is clicked on remove modal.", async function(){
         let has_plant = By.css(".tile.has_plant");
-        let popver_remove_btn = By.css(".popover .btn-secondary");
+        let popver_remove_btn = By.css(".popover > .btn-secondary");
         let modal_remove_btn = By.css(".modals_action > .btn-secondary");
 
         await driver.findElement(has_plant).click();
-        await driver.wait(until.elementLocated(popver_remove_btn), 60000)
+        await assertElementExist(popver_remove_btn);
         await driver.findElement(popver_remove_btn).click();
-        await driver.wait(until.elementLocated(modal_remove_btn), 60000)
+        await assertElementExist(modal_remove_btn);
         await driver.findElement(modal_remove_btn).click();
-        const elements = await driver.findElements(has_plant);
-        assert(!elements.length);
+        await assertElementNotExist(has_plant);
     })
 
-    /* Will plant corn on tile */
-    it("Plant corn", async function (){
-        let first_tile = By.css(".tile:nth-child(1)");
-        let earnings = By.css(".earnings");
-
-        await plantCrop(first_tile, DEFAULT.plants.corn, false);
-        assert(await driver.findElement(earnings).getText() == "Total Earnings: 5$");
+    /** 
+    *   DOCU: Will plant corn on tile. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can plant corn on first tile.", async function(){
+        await plantCrop(By.css(".tile:nth-child(1)"), DEFAULT.plants.corn, false);
+        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 5$");
     })
 
-    /* Will harvest corn on tile */
-    it("Harvest corn", async function (){
-        let first_tile = By.css(".tile:nth-child(1)");
-        let earnings = By.css(".earnings");
-
-        await driver.wait(until.elementLocated(By.css(".harvest")), 60000)
-        await harvestCrop(first_tile);
-        assert(await driver.findElement(earnings).getText() == "Total Earnings: 105$");
+    /** 
+    *   DOCU: Will harvest corn on tile. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can harvest corn and earn money.", async function(){
+        await harvestCrop(By.css(".tile.harvest"));
+        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 105$");
     })
 
-    /* Will plant two corns on tile */
-    it("Plant Two corns", async function (){
-        let first_tile = By.css(".tile:nth-child(1)");
-        let second_tile = By.css(".tile:nth-child(2)");
+    /** 
+    *   DOCU: Will plant two corns on tile. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can plant two corns on selected tiles.", async function(){
         let earnings = By.css(".earnings");
         
-        await plantCrop(first_tile, DEFAULT.plants.corn, false);
+        await plantCrop(By.css(".tile:nth-child(1)"), DEFAULT.plants.corn, false);
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 70$");
-        await driver.sleep(300);
-        await plantCrop(second_tile, DEFAULT.plants.corn, false);
+        await driver.sleep(500);
+        await plantCrop(By.css(".tile:nth-child(2)"), DEFAULT.plants.corn, false);
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 35$");
     })
 
-    /* Will harvest two corns on tile */
-    it("Harvest two corns", async function (){
+    /** 
+    *   DOCU: Will harvest two corns on tile. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can harvest two corns and earn money.", async function(){
         let harvest_tile = By.css(".harvest");
         let earnings = By.css(".earnings");
 
-        await driver.wait(until.elementLocated(harvest_tile), 60000)
         await harvestCrop(harvest_tile);
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 135$");
     
-        await driver.wait(until.elementLocated(harvest_tile), 60000)
         await harvestCrop(harvest_tile);
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 235$");
     })
 
-    /* Will expand land */
-    it("Expand land", async function (){
-        let expand_btn = By.css(".expand_btn");
-        let earnings = By.css(".earnings");
-        let tile_25th = By.css(".tile:nth-child(25)");
-
-        await driver.findElement(expand_btn).click();
-        assert(await driver.findElement(earnings).getText() == "Total Earnings: 55$");
-        const elements = await driver.findElements(tile_25th);
+    /** 
+    *   DOCU: Will expand land. <br>
+    *   Last updated at: January 24, 2023
+    *   @author Jhones
+    */
+    it("Can expand land and subtract the cost in current money.", async function(){
+        await driver.findElement(By.css(".expand_btn")).click();
+        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 55$");
+        const elements = await driver.findElements(By.css(".tile:nth-child(25)"));
         assert(elements.length);
     })
 })
