@@ -6,9 +6,9 @@ const { DEFAULT } = require("./constants");
 let chrome_options = new chrome.Options().windowSize(DEFAULT.screen);
 chrome_options.addArguments("--proxy-server='direct://'");
 chrome_options.addArguments("--proxy-bypass-list=*");
-// chrome_options.addArguments("--disable-gpu");
-// chrome_options.addArguments("--headless"); 
-// chrome_options.addArguments("--blink-settings=imagesEnabled=false"); 
+chrome_options.addArguments("--disable-gpu");
+chrome_options.addArguments("--headless"); 
+chrome_options.addArguments("--blink-settings=imagesEnabled=false"); 
 
 /* Command to run test: NODE_ENV=development ./node_modules/.bin/mocha tests/frontend/*.test.js */
 
@@ -33,6 +33,7 @@ describe('Parmbili Unit Test', function() {
         await driver.quit();
     });
 
+    /* This will plant a crop in a specified tile */
     const plantCrop = async (tile, targetPlant, isTilled = true) => {
         let popover_plant = By.css(".popover .popover_btn");
         let modal_plant = By.css(".modals_plants .plant");
@@ -52,6 +53,7 @@ describe('Parmbili Unit Test', function() {
         await driver.findElement(plant_btn).click();
     }
 
+    /* This will harvest plant in a specified tile */
     const harvestCrop = async (tile) => {
         let popover_harvest = By.css(".popover .popover_btn");
         let harvest_btn = By.css(".popover_btn:nth-child(1)");
@@ -62,6 +64,7 @@ describe('Parmbili Unit Test', function() {
         await driver.sleep(500);
     }
 
+    /* Will till the tile */
     it('Till', async function() {
         let first_tile = By.css(".tile:nth-child(1)");
         let popver_btn = By.css(".popover .popover_btn")
@@ -71,15 +74,18 @@ describe('Parmbili Unit Test', function() {
         await driver.findElement(By.css(".popover_btn")).click();
     })
 
+    /* Will plant on tilled tile */
     it('Plant', async function() {
         let popver_btn = By.css(".popover_btn")
         await driver.findElement(popver_btn).click();
     })
 
+    /* Will cancel plant action */
     it('Cancel Plant', async function() {
          await driver.findElement(By.css(".btn-secondary")).click();
     })
 
+    /* Will plant a selected crop on tilled tile */
     it('Confirm Plant', async function() {
         let tilled = By.css(".tilled");
         let has_plant = By.css(".has_plant");
@@ -91,6 +97,7 @@ describe('Parmbili Unit Test', function() {
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 40$");
     })
 
+    /* Will click the onprogress plant and show the remove popover */
     it('Remove', async function() {
         let has_plant = By.css(".has_plant");
         let popover_remove_btn = By.css(".popover .btn-secondary");
@@ -100,11 +107,13 @@ describe('Parmbili Unit Test', function() {
         await driver.findElement(popover_remove_btn).click();
     })
 
+    /* Will cancel the remove popover*/
     it('Cancel Remove', async function() {
         let cancel_btn = By.css(".btn-danger");
         await driver.findElement(cancel_btn).click();
     })
 
+    /* Will remove the crop/plant in tile */
     it('Confirm Remove', async function() {
         let has_plant = By.css(".tile.has_plant");
         let popver_remove_btn = By.css(".popover .btn-secondary");
@@ -119,6 +128,7 @@ describe('Parmbili Unit Test', function() {
         assert(!elements.length);
     })
 
+    /* Will plant corn on tile */
     it("Plant corn", async function (){
         let first_tile = By.css(".tile:nth-child(1)");
         let earnings = By.css(".earnings");
@@ -127,6 +137,7 @@ describe('Parmbili Unit Test', function() {
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 5$");
     })
 
+    /* Will harvest corn on tile */
     it("Harvest corn", async function (){
         let first_tile = By.css(".tile:nth-child(1)");
         let earnings = By.css(".earnings");
@@ -136,6 +147,7 @@ describe('Parmbili Unit Test', function() {
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 105$");
     })
 
+    /* Will plant two corns on tile */
     it("Plant Two corns", async function (){
         let first_tile = By.css(".tile:nth-child(1)");
         let second_tile = By.css(".tile:nth-child(2)");
@@ -148,6 +160,7 @@ describe('Parmbili Unit Test', function() {
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 35$");
     })
 
+    /* Will harvest two corns on tile */
     it("Harvest two corns", async function (){
         let harvest_tile = By.css(".harvest");
         let earnings = By.css(".earnings");
@@ -161,6 +174,7 @@ describe('Parmbili Unit Test', function() {
         assert(await driver.findElement(earnings).getText() == "Total Earnings: 235$");
     })
 
+    /* Will expand land */
     it("Expand land", async function (){
         let expand_btn = By.css(".expand_btn");
         let earnings = By.css(".earnings");
