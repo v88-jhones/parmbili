@@ -1,18 +1,18 @@
 {
-    "DEFAULT": {
-        "link": "http://localhost:3000/",
-        "screen": { 
-            "width": 1552,
-            "height": 832
-        },
-        "plants": {
-            "potato": ".plant:nth-child(1)",
-            "onion": ".plant:nth-child(2)",
-            "carrot": ".plant:nth-child(3)",
-            "corn": ".plant:nth-child(4)"
-        },
-        "timeout": 180000,
-        "harvest_wait_time": 70000,
-        "wait_time": 30000
+    "LINK": "http://localhost:3000/",
+    "SCREEN_SIZE": {
+        "width"  : 1552,
+        "height" : 832
+    },
+    "PLANTS" : {
+        "potato"  : ".plant:nth-child(1)",
+        "onion"   : ".plant:nth-child(2)",
+        "carrot"  : ".plant:nth-child(3)",
+        "corn"    : ".plant:nth-child(4)"
+    },
+    "TIMEOUT_SPEED": {
+        "fast"   : 30000,
+        "normal" : 70000,
+        "slow"   : 180000
     }
 }

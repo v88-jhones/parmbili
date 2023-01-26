@@ -1,9 +1,9 @@
 const chrome = require("selenium-webdriver/chrome");
 const assert = require("assert");
 const { Builder, By, Key, until } = require("selenium-webdriver");
-const { DEFAULT } = require("./constants");
+const { LINK, SCREEN_SIZE, PLANTS, TIMEOUT_SPEED } = require("./constants");
 
-let chrome_options = new chrome.Options().windowSize(DEFAULT.screen);
+let chrome_options = new chrome.Options().windowSize(SCREEN_SIZE);
 chrome_options.addArguments("--proxy-server='direct://'");
 chrome_options.addArguments("--proxy-bypass-list=*");
 chrome_options.addArguments("--disable-gpu");
@@ -17,7 +17,7 @@ chrome_options.addArguments("--blink-settings=imagesEnabled=false");
 *   @author Jhones
 */
 describe("Parmbili Unit Test", function(){
-    this.timeout(DEFAULT.timeout);
+    this.timeout(TIMEOUT_SPEED.slow);
     let driver;
 
     before(async function(){
@@ -25,8 +25,8 @@ describe("Parmbili Unit Test", function(){
                 .forBrowser("chrome")
                 .setChromeOptions(chrome_options)
                 .build(); 
-        await driver.get(DEFAULT.link);
-        await driver.manage().window().setRect(DEFAULT.screen);
+        await driver.get(LINK);
+        await driver.manage().window().setRect(SCREEN_SIZE);
     });
 
     beforeEach(async function(){
@@ -39,15 +39,16 @@ describe("Parmbili Unit Test", function(){
 
     /** 
     *   DOCU: Will wait for selected element to exists and assert it. <br>
-    *   Last updated at: January 24, 2023
-    *   @param {object} element the element to assert
+    *   Last updated at: January 24, 2023.
+    *   @param {object} element the element to assert.
+    *   @param {integer} delay the delay after checking if the element exists.
     *   @author Jhones
     */
     const assertElementExist = async (element, delay = 500) => {
-        await driver.wait(until.elementLocated(element), DEFAULT.wait_time);
+        await driver.wait(until.elementLocated(element), TIMEOUT_SPEED.fast);
         const search_input_field = await driver.findElements(element);
         assert(search_input_field.length);
-        await driver.wait(until.elementIsVisible(await driver.findElement(element)), DEFAULT.wait_time);
+        await driver.wait(until.elementIsVisible(await driver.findElement(element)), TIMEOUT_SPEED.fast);
         await driver.sleep(delay);
     }
 
@@ -55,7 +56,7 @@ describe("Parmbili Unit Test", function(){
     *   DOCU: Will assert if the element is not exists. <br>
     *   Last updated at: January 24, 2023
     *   @param {object} element the element to assert 
-    *   @param {object} delay optional, default is 500. The delay before checking.
+    *   @param {object} delay The delay before checking if the element not exists.
     *   @author Jhones
     */
     const assertElementNotExist = async (element, delay = 500) => {
@@ -72,23 +73,27 @@ describe("Parmbili Unit Test", function(){
     *   @param {boolean} isTilled the status of the tile.
     *   @author Jhones
     */
-    const plantCrop = async (tile, targetPlant, isTilled = true) => {
+    const plantCrop = async (tile, targetPlant, isTilled = true, earn = 0) => {
         let popover_plant = By.css(".popover .popover_btn");
         let modal_plant = By.css(".modals_plants .plant");
+        let earnings = By.css(".earnings");
 
         await driver.findElement(tile).click();
         await assertElementExist(popover_plant);
         await driver.findElement(popover_plant).click();
+        await assertElementExist(popover_plant);
 
         if(!isTilled){
             await driver.findElement(popover_plant).click();
+            await assertElementExist(modal_plant);
         }
-
-        await assertElementExist(modal_plant);
+        
         await driver.findElement(By.css(targetPlant)).click();
         await assertElementExist(By.css(".plant.active"));
         await driver.findElement(By.css(".btn:nth-child(2)")).click();
         await assertElementExist(By.css(".tile.has_plant"));
+
+        assert(await driver.findElement(earnings).getText() == `Total Earnings: ${earn}$`);
     }
 
     /** 
@@ -97,14 +102,16 @@ describe("Parmbili Unit Test", function(){
     *   @param {object} tile the tile element to be harvest.
     *   @author Jhones
     */
-    const harvestCrop = async (tile) => {
+    const harvestCrop = async (tile, earn = 0) => {
         let harvest_btn = By.css(".popover_btn:nth-child(1)");
-        await driver.wait(until.elementLocated(tile), DEFAULT.harvest_wait_time);
+        let earnings = By.css(".earnings");
+        
+        await driver.wait(until.elementLocated(tile), TIMEOUT_SPEED.normal);
         await driver.findElement(tile).click();
         await assertElementExist(By.css(".popover .popover_btn"));
         await driver.findElement(harvest_btn).click();
         await assertElementExist(harvest_btn);
-        await driver.sleep(500);
+        assert(await driver.findElement(earnings).getText() == `Total Earnings: ${earn}$`);
     }
         
     /** 
@@ -145,10 +152,9 @@ describe("Parmbili Unit Test", function(){
     *   @author Jhones
     */
     it("Can plant a selected crop from plant modal.", async function(){
-        await plantCrop(By.css(".tilled"), DEFAULT.plants.potato);
+        await plantCrop(By.css(".tilled"), PLANTS.potato, true, 40);
         const elements = await driver.findElements(By.css(".has_plant"));
         assert(elements.length);
-        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 40$");
     })
 
     /** 
@@ -160,7 +166,7 @@ describe("Parmbili Unit Test", function(){
         let popover_remove_btn = By.css(".popover .btn-secondary");
 
         await driver.findElement(By.css(".has_plant")).click();
-        await driver.wait(until.elementLocated(popover_remove_btn), DEFAULT.wait_time);
+        await driver.wait(until.elementLocated(popover_remove_btn), TIMEOUT_SPEED.fast);
         await assertElementExist(popover_remove_btn);
         await driver.findElement(popover_remove_btn).click();
         await assertElementExist(By.css(".modals .remove"));
@@ -200,8 +206,7 @@ describe("Parmbili Unit Test", function(){
     *   @author Jhones
     */
     it("Can plant corn on first tile.", async function(){
-        await plantCrop(By.css(".tile:nth-child(1)"), DEFAULT.plants.corn, false);
-        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 5$");
+        await plantCrop(By.css(".tile:nth-child(1)"), PLANTS.corn, false, 5);
     })
 
     /** 
@@ -210,8 +215,7 @@ describe("Parmbili Unit Test", function(){
     *   @author Jhones
     */
     it("Can harvest corn and earn money.", async function(){
-        await harvestCrop(By.css(".tile.harvest"));
-        assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 105$");
+        await harvestCrop(By.css(".tile.harvest"), 105);
     })
 
     /** 
@@ -220,13 +224,8 @@ describe("Parmbili Unit Test", function(){
     *   @author Jhones
     */
     it("Can plant two corns on selected tiles.", async function(){
-        let earnings = By.css(".earnings");
-        
-        await plantCrop(By.css(".tile:nth-child(1)"), DEFAULT.plants.corn, false);
-        assert(await driver.findElement(earnings).getText() == "Total Earnings: 70$");
-        await driver.sleep(500);
-        await plantCrop(By.css(".tile:nth-child(2)"), DEFAULT.plants.corn, false);
-        assert(await driver.findElement(earnings).getText() == "Total Earnings: 35$");
+        await plantCrop(By.css(".tile:nth-child(1)"), PLANTS.corn, false, 70);
+        await plantCrop(By.css(".tile:nth-child(2)"), PLANTS.corn, false, 35);
     })
 
     /** 
@@ -236,13 +235,9 @@ describe("Parmbili Unit Test", function(){
     */
     it("Can harvest two corns and earn money.", async function(){
         let harvest_tile = By.css(".harvest");
-        let earnings = By.css(".earnings");
 
-        await harvestCrop(harvest_tile);
-        assert(await driver.findElement(earnings).getText() == "Total Earnings: 135$");
-    
-        await harvestCrop(harvest_tile);
-        assert(await driver.findElement(earnings).getText() == "Total Earnings: 235$");
+        await harvestCrop(harvest_tile, 135);
+        await harvestCrop(harvest_tile, 235);
     })
 
     /** 
@@ -253,7 +248,6 @@ describe("Parmbili Unit Test", function(){
     it("Can expand land and subtract the cost in current money.", async function(){
         await driver.findElement(By.css(".expand_btn")).click();
         assert(await driver.findElement(By.css(".earnings")).getText() == "Total Earnings: 55$");
-        const elements = await driver.findElements(By.css(".tile:nth-child(25)"));
-        assert(elements.length);
+        await assertElementExist(By.css(".tile:nth-child(25)"));
     })
 })
